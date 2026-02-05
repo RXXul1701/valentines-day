@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Digital gifts for Titir">
+    <title>Digital Gifts - For Titir ❤️</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;600&family=Dancing+Script:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .gift-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-2xl);
+            width: 100%;
+            margin-top: var(--space-2xl);
+            padding: var(--space-xl) 0;
+        }
+
+        .gift-box-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+            text-align: center;
+            padding: var(--space-2xl) 0;
+            min-height: 250px;
+            position: relative;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gift-box:hover {
+            transform: scale(1.05) rotateY(10deg);
+        }
+
+        /* The Box */
+        .box-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--color-rose);
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .box-lid {
+            position: absolute;
+            width: 110%;
+            height: 30px;
+            background: var(--color-deep-rose);
+            top: -10px;
+            left: -5%;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+            z-index: 2;
+        }
+
+        /* Ribbon */
+        .ribbon-v {
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: var(--color-lavender);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .ribbon-h {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: var(--color-lavender);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* When opened */
+        .gift-box-wrapper.opened {
+            min-height: 400px;
+        }
+
+        .gift-box-wrapper.opened .box-lid {
+            transform: translateY(-80px) rotate(-20deg) translateX(40px);
+            opacity: 0;
+        }
+
+        .gift-box-wrapper.opened .gift-content {
+            opacity: 1;
+            transform: translate(-50%, -140px) scale(1);
+        }
+
+        .gift-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 0) scale(0);
+            width: 280px;
+            max-width: 90vw;
+            background: var(--color-white);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .gift-content h4 {
+            color: var(--color-rose);
+            margin-bottom: var(--space-xs);
+            font-family: var(--font-handwritten);
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .gift-container {
+                grid-template-columns: 1fr;
+                gap: var(--space-3xl);
+            }
+
+            .gift-box-wrapper {
+                padding: var(--space-xl) 0;
+            }
+
+            .gift-content {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gift-content {
+                width: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">For Titir ❤️</a>
+            <ul class="nav-links">
+                <li><a href="story.html" class="nav-link">Our Story</a></li>
+                <li><a href="letters.html" class="nav-link">Letters</a></li>
+                <li><a href="reasons.html" class="nav-link">Reasons</a></li>
+                <li><a href="gifts.html" class="nav-link">Gifts</a></li>
+                <li><a href="portal.html" class="nav-link">Dev Console</a></li>
+                <li><a href="song.html" class="nav-link">Our Song</a></li>
+                <li><a href="question.html" class="nav-link">The Question</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-hearts">
+            <div class="heart">❤️</div>
+            <div class="heart">💕</div>
+            <div class="heart">💖</div>
+            <div class="heart">💗</div>
+            <div class="heart">💝</div>
+            <div class="heart">❤️</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="section" style="padding-top: 6rem;">
+        <div class="container">
+            <h1 class="text-center fade-in">Digital Bribes for a Potential Date</h1>
+            <p class="text-center handwritten fade-in-delay" style="margin-bottom: var(--space-2xl);">
+                Click to open your gifts (yes, I am serious)
+            </p>
+
+            <div class="gift-container">
+                <!-- Gift 1 -->
+                <div class="gift-box-wrapper fade-in">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>🕹️</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>The Manual Override Card</h4>
+                            <p>Valid for one argument of your choice where I am legally required to admit you were
+                                right, even if you were not. Use it wisely. I am an engineer, admitting I am wrong is
+                                physically painful for me.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+
+                <!-- Gift 2 -->
+                <div class="gift-box-wrapper fade-in-delay">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>👻</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>The 24 Hour Ghosting License</h4>
+                            <p>For when you need to calm your senses or just think I am being extra. This entitles you
+                                to 24 hours of total silence without me sending a single question mark or a "You there?"
+                                text. Enjoy the peace while it lasts.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+
+                <!-- Gift 3 -->
+                <div class="gift-box-wrapper fade-in-delay" style="animation-delay: 0.6s">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>☕</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>One Coffee Date Without the Trauma</h4>
+                            <p>A future date in Kolkata where we actually talk like normal human beings instead of
+                                bringing up the Great Silence of 2022 to 2025. I promise not to mention my placement
+                                stress more than five times.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+
+                <!-- Gift 4 -->
+                <div class="gift-box-wrapper fade-in-delay" style="animation-delay: 0.9s">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>🛠️</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>The I Did Not Vibe Code This Warranty</h4>
+                            <p>A lifetime guarantee that if this website crashes or the CSS looks weird on your phone,
+                                it is a feature, not a bug. If you find a glitch, please do not tell me. My IITian ego
+                                is already fragile enough.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+
+                <!-- Gift 5 -->
+                <div class="gift-box-wrapper fade-in-delay" style="animation-delay: 1.2s">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>🫂</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>The "No-Questions-Asked" Hug</h4>
+                            <p>Valid for one moment when things feel too heavy
+                                and you don't want to explain why. This entitles you to my absolute attention (and zero
+                                advice) while you just vent. I’ll just listen until you feel like yourself again.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+
+                <!-- Gift 6 -->
+                <div class="gift-box-wrapper fade-in-delay" style="animation-delay: 1.5s">
+                    <div class="gift-box">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="ribbon-v"></div>
+                            <div class="ribbon-h"></div>
+                            <span>👑</span>
+                        </div>
+                        <div class="gift-content">
+                            <h4>The Ego Boost Pass</h4>
+                            <p>Valid for one of those days where you're doubting yourself. I will spend 30 minutes
+                                listing exactly why you're the most impressive person I know (and the cutest). It might
+                                be painful for me to be this nice for that long, but for you, I'll allow it.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-md); color: var(--color-rose);">Open me</p>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: var(--space-3xl);">
+                <a href="portal.html" class="btn btn-primary">Continue →</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
