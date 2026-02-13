@@ -49,34 +49,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // No button runaway logic - continuously moves away from cursor
         let noBtnAttempts = 0;
-        let lastCursorX = 0;
-        let lastCursorY = 0;
-        let cursorStopTimeout = null;
 
         function updateNoButtonPosition(e) {
-            const cursorX = e.clientX || (e.touches && e.touches[0].clientX);
-            const cursorY = e.clientY || (e.touches && e.touches[0].clientY);
+            // Get proper coordinates for both mouse and touch events
+            let cursorX, cursorY;
 
-            if (!cursorX || !cursorY) return;
+            if (e.type.startsWith('touch')) {
+                cursorX = e.touches[0].clientX;
+                cursorY = e.touches[0].clientY;
+            } else {
+                cursorX = e.clientX;
+                cursorY = e.clientY;
+            }
 
-            // Check if cursor actually moved
-            if (cursorX !== lastCursorX || cursorY !== lastCursorY) {
-                lastCursorX = cursorX;
-                lastCursorY = cursorY;
+            if (cursorX === undefined || cursorY === undefined) return;
 
-                // Clear the stop timeout
-                if (cursorStopTimeout) {
-                    clearTimeout(cursorStopTimeout);
+            // Check proximity and move if needed
+            if (isNearNoButton(cursorX, cursorY)) {
+                // Prevent default to avoid scrolling/clicking on mobile
+                if (e.cancelable) {
+                    e.preventDefault();
                 }
-
-                // Set timeout to detect when cursor stops (not used for stopping movement, just for tracking)
-                cursorStopTimeout = setTimeout(() => {
-                    // Cursor stopped moving
-                }, 100);
-
-                // Move the button away from cursor
                 moveNoButtonAway(cursorX, cursorY);
             }
+        }
+
+        function isNearNoButton(cursorX, cursorY) {
+            const noRect = noBtn.getBoundingClientRect();
+            const noCenterX = noRect.left + noBtn.offsetWidth / 2;
+            const noCenterY = noRect.top + noBtn.offsetHeight / 2;
+
+            const dx = noCenterX - cursorX;
+            const dy = noCenterY - cursorY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Using 220px as detection range
+            return distance < 220;
         }
 
         function moveNoButtonAway(cursorX, cursorY) {
@@ -95,84 +103,81 @@ document.addEventListener('DOMContentLoaded', function () {
             const dy = noCenterY - cursorY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            // Only move if cursor is within 220px (increased for smoother earlier reaction)
-            if (distance < 220) {
-                noBtnAttempts++;
+            noBtnAttempts++;
 
-                // Initialize runaway state
-                if (!noBtn.classList.contains('moving')) {
-                    // FLIP technique for ultra-smooth Yes button re-centering
-                    const first = yesBtn.getBoundingClientRect();
-                    const currentRect = noBtn.getBoundingClientRect();
+            // Initialize runaway state
+            if (!noBtn.classList.contains('moving')) {
+                // FLIP technique for ultra-smooth Yes button re-centering
+                const first = yesBtn.getBoundingClientRect();
+                const currentRect = noBtn.getBoundingClientRect();
 
-                    // Move No button to body
-                    document.body.appendChild(noBtn);
-                    noBtn.classList.add('moving');
-                    noBtn.style.margin = '0';
-                    noBtn.style.left = currentRect.left + 'px';
-                    noBtn.style.top = currentRect.top + 'px';
+                // Move No button to body
+                document.body.appendChild(noBtn);
+                noBtn.classList.add('moving');
+                noBtn.style.margin = '0';
+                noBtn.style.left = currentRect.left + 'px';
+                noBtn.style.top = currentRect.top + 'px';
 
-                    const last = yesBtn.getBoundingClientRect();
+                const last = yesBtn.getBoundingClientRect();
 
-                    // Invert: shift Yes button back to its original visual spot
-                    const dx = first.left - last.left;
-                    const dy = first.top - last.top;
+                // Invert: shift Yes button back to its original visual spot
+                const dxRel = first.left - last.left;
+                const dyRel = first.top - last.top;
 
-                    yesBtn.style.transition = 'none';
-                    yesBtn.style.transform = `translate(${dx}px, ${dy}px)`;
+                yesBtn.style.transition = 'none';
+                yesBtn.style.transform = `translate(${dxRel}px, ${dyRel}px)`;
 
-                    // Ultra-smooth glide back to center without bounce
+                // Ultra-smooth glide back to center without bounce
+                requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            yesBtn.style.transition = 'transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
-                            yesBtn.style.transform = 'translate(0, 0)';
-                        });
+                        yesBtn.style.transition = 'transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+                        yesBtn.style.transform = 'translate(0, 0)';
                     });
-                }
+                });
+            }
 
-                // Avoidance direction
-                const angle = distance < 1 ? Math.random() * Math.PI * 2 : Math.atan2(dy, dx);
+            // Avoidance direction
+            const angle = distance < 1 ? Math.random() * Math.PI * 2 : Math.atan2(dy, dx);
 
-                // Speed calculation - increased moveAmount for more 'glide'
-                const moveAmount = Math.max(80, 240 - distance);
+            // Speed calculation - increased moveAmount for more 'glide'
+            const moveAmount = Math.max(80, 240 - distance);
 
-                let targetX = parseFloat(noBtn.style.left || 0) + Math.cos(angle) * moveAmount;
-                let targetY = parseFloat(noBtn.style.top || 0) + Math.sin(angle) * moveAmount;
+            let targetX = parseFloat(noBtn.style.left || 0) + Math.cos(angle) * moveAmount;
+            let targetY = parseFloat(noBtn.style.top || 0) + Math.sin(angle) * moveAmount;
 
-                // STRICT VIEWPORT CLAMPING
-                const padding = 30;
-                const maxX = window.innerWidth - btnWidth - padding;
-                const maxY = window.innerHeight - btnHeight - padding;
+            // STRICT VIEWPORT CLAMPING
+            const padding = 30;
+            const maxX = window.innerWidth - btnWidth - padding;
+            const maxY = window.innerHeight - btnHeight - padding;
+
+            targetX = Math.max(padding, Math.min(maxX, targetX));
+            targetY = Math.max(padding, Math.min(maxY, targetY));
+
+            // Avoid Yes button
+            if (checkOverlap(targetX, targetY, btnWidth, btnHeight, yesRect)) {
+                const altAngle = angle + (Math.random() * 0.5 + 0.5) * Math.PI;
+                targetX = parseFloat(noBtn.style.left || 0) + Math.cos(altAngle) * moveAmount;
+                targetY = parseFloat(noBtn.style.top || 0) + Math.sin(altAngle) * moveAmount;
 
                 targetX = Math.max(padding, Math.min(maxX, targetX));
                 targetY = Math.max(padding, Math.min(maxY, targetY));
+            }
 
-                // Avoid Yes button
-                if (checkOverlap(targetX, targetY, btnWidth, btnHeight, yesRect)) {
-                    const altAngle = angle + (Math.random() > 0.5 ? 1 : -1) * Math.PI / 2;
-                    targetX = parseFloat(noBtn.style.left || 0) + Math.cos(altAngle) * moveAmount;
-                    targetY = parseFloat(noBtn.style.top || 0) + Math.sin(altAngle) * moveAmount;
+            noBtn.style.left = targetX + 'px';
+            noBtn.style.top = targetY + 'px';
 
-                    targetX = Math.max(padding, Math.min(maxX, targetX));
-                    targetY = Math.max(padding, Math.min(maxY, targetY));
-                }
+            // After 5 attempts, make button smaller
+            if (noBtnAttempts > 5) {
+                noBtn.style.transform = 'scale(0.85)';
+            }
 
-                noBtn.style.left = targetX + 'px';
-                noBtn.style.top = targetY + 'px';
-
-                // After 5 attempts, make button smaller
-                if (noBtnAttempts > 5) {
-                    noBtn.style.transform = 'scale(0.85)';
-                }
-
-                // After 10 attempts, show hint
-                if (noBtnAttempts === 10) {
-                    const hint = document.createElement('div');
-                    hint.textContent = "You can't escape fate 😏";
-                    hint.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; color: var(--color-rose); font-family: var(--font-handwritten); pointer-events: none; z-index: 9999; animation: fadeOut 2s forwards;';
-                    document.body.appendChild(hint);
-                    setTimeout(() => hint.remove(), 2000);
-                }
+            // After 10 attempts, show hint
+            if (noBtnAttempts === 10) {
+                const hint = document.createElement('div');
+                hint.textContent = "You can't escape fate 😏";
+                hint.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; color: var(--color-rose); font-family: var(--font-handwritten); pointer-events: none; z-index: 9999; animation: fadeOut 2s forwards;';
+                document.body.appendChild(hint);
+                setTimeout(() => hint.remove(), 2000);
             }
         }
 
@@ -188,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Track mouse/touch movement continuously
         document.addEventListener('mousemove', updateNoButtonPosition);
-        document.addEventListener('touchmove', updateNoButtonPosition);
+        document.addEventListener('touchmove', updateNoButtonPosition, { passive: false });
+        document.addEventListener('touchstart', updateNoButtonPosition, { passive: false });
     }
 
     // ========== Gift Box Notifications ==========
